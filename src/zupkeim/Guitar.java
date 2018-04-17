@@ -2,12 +2,9 @@ package zupkeim;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Queue;
-import java.util.List;
+import java.util.*;
 
 import javax.sound.sampled.LineUnavailableException;
-
-import edu.msoe.taylor.audio.Note;
 
 /**
  * The Guitar class generates guitar sounds based on user input.
@@ -40,7 +37,7 @@ public class Guitar {
     /**
      * Queue of notes 
      */
-    private Queue<Note> notes;
+    private Queue<Note> notes = new LinkedList<>();
     
     /**
      *  Sample rate in samples per second 
@@ -57,7 +54,8 @@ public class Guitar {
      * and decay rate.
      */
     public Guitar() {
-        // TODO
+        this.decayRate = DEFAULT_DECAY_RATE;
+        this.sampleRate = DEFAULT_SAMPLE_RATE;
     }
     
     /**
@@ -69,8 +67,21 @@ public class Guitar {
      * @param decayRate decay rate (between 0.0f and 1.0f)
      */
     public Guitar(int sampleRate, float decayRate) {
-        this.decayRate = decayRate;
-        this.sampleRate = sampleRate;
+        if(sampleRate < DEFAULT_SAMPLE_RATE || sampleRate > MAX_SAMPLE_RATE){
+            System.err.println("Invalid Sample Rate. Will use default sample rate ("
+                    + DEFAULT_SAMPLE_RATE + ") instead");
+            this.sampleRate = DEFAULT_SAMPLE_RATE;
+        } else {
+            this.sampleRate = sampleRate;
+        }
+
+        if(decayRate < 0.0f || decayRate > 1.0f){
+            System.err.println("Invalid Decay Rate. Will use default decay rate ("
+                    + DEFAULT_DECAY_RATE + ") instead");
+            this.decayRate = DEFAULT_DECAY_RATE;
+        } else {
+            this.decayRate = decayRate;
+        }
     }
         
     /**
@@ -91,7 +102,8 @@ public class Guitar {
      * @throws IOException If any other input/output problem is encountered.
      */
     public void play() throws LineUnavailableException, IOException {
-        // TODO
+        SimpleAudio simpleAudio = new SimpleAudio(sampleRate);
+        simpleAudio.play(jaffeSmith());
     }
 
     /**
@@ -104,8 +116,39 @@ public class Guitar {
      * @return List of samples comprising the pluck sound(s).
      */
     private List<Float> jaffeSmith() {
-        // TODO
-        return null;
+        //Initialization Phase
+        List<Float> samples = new ArrayList<>();
+        final int MILLI_OFFSET = 1000;
+        Random random = new Random();
+        Queue<Float> periodSamples = new LinkedList<>();
+
+        for(int amtNotes = 0; amtNotes < notes.size(); amtNotes++){
+            Note note = notes.poll();
+            int samplesPerPeriod = (int)(sampleRate / note.getFrequency());
+            float numberOfSamples = sampleRate * (note.getDuration() / MILLI_OFFSET);
+            periodSamples = new LinkedList<>();
+            for(int amtPeriodSamples = 0; amtPeriodSamples < samplesPerPeriod; amtPeriodSamples++){
+                float randomNumber = random.nextFloat();
+                if(Math.random()>.5){
+                    randomNumber *= -1.0f;
+                }
+                periodSamples.offer(randomNumber);
+            }
+
+            //Looping Phase
+            float previousSample = 0.0f;
+            float currentSample;
+            float newSample;
+
+            for(int amtSamples = 0; amtSamples < numberOfSamples; amtSamples++){
+                currentSample = periodSamples.poll();
+                newSample = ((previousSample + currentSample)/2) * decayRate;
+                periodSamples.offer(newSample);
+                samples.add(newSample);
+                previousSample = newSample;
+            }
+        }
+        return samples;
     }
 
     /**
@@ -114,13 +157,7 @@ public class Guitar {
      * @return An array of Notes in the Guitar object.
      */
     public Note[] getNotes() {
-        Note[] returnArray = new Note[notes.size()];
-        Queue<Note> noteQueue;
-        for(int i=0; i<notes.size(); i++){
-            returnArray[i] = this.notes.poll();
-//            noteQueue =
-        }
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Optional method not implemented");
     }
     
     /**
