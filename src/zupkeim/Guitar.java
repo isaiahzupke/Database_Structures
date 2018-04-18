@@ -1,3 +1,10 @@
+/*
+ Course: CS2852 021
+ Term: Spring 2018
+ Assignment: Lab 5: Guitar Synthesizer
+ Author: Chris Taylor | Edited By Isaiah Zupke
+ Date: 04/16/2018
+ */
 package zupkeim;
 
 import java.io.File;
@@ -15,8 +22,9 @@ import javax.sound.sampled.LineUnavailableException;
  * list of samples for all of the notes to be played (by calling
  * an internal method (jaffeSmith())) and then send them to the
  * audio output stream.
- * @author t a y l o r@msoe.edu
- * @version 2018.03.26_2.3
+ * @author t a y l o r@msoe.edu | Edited By Isaiah Zupke
+ *
+ * @version 2018.04.16
  */
 public class Guitar {
     /** 
@@ -122,8 +130,7 @@ public class Guitar {
         Random random = new Random();
         Queue<Float> periodSamples = new LinkedList<>();
 
-        for(int amtNotes = 0; amtNotes < notes.size(); amtNotes++){
-            Note note = notes.poll();
+        for(Note note : notes){
             int samplesPerPeriod = (int)(sampleRate / note.getFrequency());
             float numberOfSamples = sampleRate * (note.getDuration() / MILLI_OFFSET);
             periodSamples = new LinkedList<>();

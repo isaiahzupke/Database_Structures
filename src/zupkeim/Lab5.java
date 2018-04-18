@@ -1,7 +1,11 @@
+/*
+ Course: CS2852 021
+ Term: Spring 2018
+ Assignment: Lab 5: Guitar Synthesizer
+ Author: Chris Taylor | Edited By Isaiah Zupke
+ Date: 04/16/2018
+ */
 package zupkeim;
-
-import javafx.scene.control.Alert;
-import javafx.stage.FileChooser;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.File;
@@ -9,17 +13,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 /**
  * Driver program for Data Structures lab assignment
  * @author t a y l o r@msoe.edu
- * @version 2018.03.26
+ * @auther (edited by) Isaiah Zupke
+ * @version 2018.04.16
  */
 public class Lab5 {
-
-    private static Logger exceptionLogger;
-
 
     /**
      * Program that reads in notes from a text file and plays a song
